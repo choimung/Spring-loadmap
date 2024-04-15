@@ -6,7 +6,7 @@
 
 ### 📁 스프링 핵심 원리 - 기본편
 
-#### 🏃‍♂ Started on:  xxxx-xx-xx
+#### 🏃‍♂ Started on:  2024-04-15
 
 #### 🏆 Finished  on :  xxxx-xx-xx
 
