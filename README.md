@@ -28,7 +28,9 @@
 
 ### 📁 스프링 MVC 1편 - 백엔드 웹 개발 핵심 기술
 
-#### 🏃‍♂ Started on:  xxxx-xx-xx
+#### 🏃‍♂ Started on:  2024-04-25
+
+  - [x] 8일차 - [2024-04-25일] 공부 완료
 
 #### 🏆 Finished  on :  xxxx-xx-xx
 
