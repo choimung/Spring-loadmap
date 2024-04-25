@@ -25,14 +25,15 @@ public class RequestHeaderServlet extends HttpServlet {
         System.out.println("--- REQUEST-LINE - start ---");
         System.out.println("request.getMethod() = " + request.getMethod()); //GET
         System.out.println("request.getProtocol() = " + request.getProtocol()); //HTTP/1.1
-        System.out.println("request.getScheme() = " + request.getScheme()); //http// http://localhost:8080/request-header
+        System.out.println(
+                "request.getScheme() = " + request.getScheme()); //http// http://localhost:8080/request-header
         System.out.println("request.getRequestURL() = " + request.getRequestURL());// /request-header
         System.out.println("request.getRequestURI() = " + request.getRequestURI());//username=hi
         System.out.println("request.getQueryString() = " + request.getQueryString());
         System.out.println("request.isSecure() = " + request.isSecure()); //https 사용유무
         System.out.println("--- REQUEST-LINE - end ---");
     }
-    
+
     private void printHeaders(HttpServletRequest request) {
         System.out.println("--- Headers start ---");
         Enumeration<String> headerNames = request.getHeaderNames();
@@ -67,7 +68,8 @@ public class RequestHeaderServlet extends HttpServlet {
         System.out.println("request.getContentLength() = " +
                 request.getContentLength());
         System.out.println("request.getCharacterEncoding() = " +
-                request.getCharacterEncoding()); System.out.println("--- Header 편의 조회 end ---");
+                request.getCharacterEncoding());
+        System.out.println("--- Header 편의 조회 end ---");
         System.out.println();
     }
 }
