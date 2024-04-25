@@ -1,4 +1,4 @@
-package com.hello.servlet.web;
+package com.hello.servlet.web.servlet;
 
 import com.hello.servlet.domain.member.MemberRepository;
 import jakarta.servlet.ServletException;
