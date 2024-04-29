@@ -7,6 +7,8 @@ import com.hello.servlet.web.examfrontcontroller.v3.contoller.ExamMemberListCont
 import com.hello.servlet.web.examfrontcontroller.v3.contoller.ExamMemberSaveControllerV3;
 import com.hello.servlet.web.examfrontcontroller.v4.ExamControllerV4;
 import com.hello.servlet.web.examfrontcontroller.v5.adapter.ExamControllerV3HandlerAdapter;
+import com.hello.servlet.web.frontcontroller.ModelView;
+import com.hello.servlet.web.frontcontroller.MyView;
 import com.hello.servlet.web.frontcontroller.v5.MyHandlerAdapter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,8 +24,8 @@ import java.util.Map;
 @WebServlet(name = "frontControllerV5", urlPatterns = "/front-controller/exam/v5/v3/members/*")
 public class ExamFrontControllerV5 extends HttpServlet {
 
-    Map<String, Object> handlerMappingMap = new HashMap<>();
-    List<ExamMyHandlerAdapter> handlerAdapterList = new ArrayList<>();
+    private Map<String, Object> handlerMappingMap = new HashMap<>();
+    private List<ExamMyHandlerAdapter> handlerAdapterList = new ArrayList<>();
 
     public ExamFrontControllerV5() {
         handlerMappingMap.put("/front-controller/exam/v5/v3/members/new-form", new ExamMemberFormControllerV3());
@@ -34,10 +36,10 @@ public class ExamFrontControllerV5 extends HttpServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        Object handler = getMyHandler(request);
+        String requestURI = request.getRequestURI();
+        Object handler = handlerMappingMap.get(requestURI);
 
         if(handler == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -48,10 +50,8 @@ public class ExamFrontControllerV5 extends HttpServlet {
 
         ExamModelView mv = handlerAdapter.handle(request, response, handler);
         String viewName = mv.getViewName();
-        Map<String, Object> model = mv.getModel();
-        ExamMyView myView = new ExamMyView(viewResolver(viewName));
-        myView.render(model, request, response);
-
+        ExamMyView myView = viewResolver(viewName);
+        myView.render(mv.getModel(),request, response);
     }
 
     private ExamMyHandlerAdapter getHandlerAdapter(Object handler) {
@@ -59,23 +59,10 @@ public class ExamFrontControllerV5 extends HttpServlet {
             if(adapter.isSupports(handler)) {
                 return adapter;
             }
-        }throw new IllegalArgumentException("my handler not found");
+        }throw new IllegalArgumentException("hh");
     }
 
-    private Object getMyHandler(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        return handlerMappingMap.get(requestURI);
-    }
-
-
-    private Map<String, String> createParamMap(HttpServletRequest request) {
-        Map<String, String> paramMap = new HashMap<>();
-        request.getParameterNames().asIterator()
-                .forEachRemaining(paramName -> paramMap.put(paramName, request.getParameter(paramName)));
-        return paramMap;
-    }
-
-    private String viewResolver(String viewName) {
-        return "/WEB-INF/views/" + viewName + ".jsp";
+    private ExamMyView viewResolver(String viewName) {
+        return new ExamMyView("/WEB-INF/views/" + viewName + ".jsp");
     }
 }
