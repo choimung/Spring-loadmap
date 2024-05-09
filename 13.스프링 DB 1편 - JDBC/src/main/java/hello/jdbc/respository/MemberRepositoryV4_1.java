@@ -1,6 +1,7 @@
 package hello.jdbc.respository;
 
 import hello.jdbc.domain.Member;
+import hello.jdbc.respository.ex.MyDBException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,15 +16,16 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
-public class MemberRepositoryV3 implements MemberRepositoryEx{
+public class MemberRepositoryV4_1 implements MemberRepository {
 
     private final DataSource dataSource;
 
-    public MemberRepositoryV3(DataSource dataSource) {
+    public MemberRepositoryV4_1(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public Member save(Member member) throws SQLException {
+    @Override
+    public Member save(Member member) {
         String sql = "insert into member(member_id, money) values (?,?)";
 
         Connection con = null;
@@ -38,13 +40,15 @@ public class MemberRepositoryV3 implements MemberRepositoryEx{
             return member;
         } catch (SQLException e) {
             log.error("DB error ", e);
-            throw new IllegalArgumentException(e);
+            throw new MyDBException(e);
         } finally {
             close(con, pstmt, null);
         }
     }
 
-    public Member findById(String memberId) throws SQLException {
+    @Override
+
+    public Member findById(String memberId) {
         String sql = "SELECT * FROM MEMBER WHERE member_id = ?";
 
         Connection con = null;
@@ -68,55 +72,61 @@ public class MemberRepositoryV3 implements MemberRepositoryEx{
 
         } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
+            throw new MyDBException(e);
+
         } finally {
             close(con, pstmt, rs);
         }
     }
 
-    public void update(String memberId, int money) throws SQLException {
+    @Override
+
+    public void update(String memberId, int money) {
         String sql = "UPDATE MEMBER set money = ? WHERE member_id = ?";
         Connection con = null;
         PreparedStatement pstm = null;
 
-        try{
+        try {
             con = getConnection();
             pstm = con.prepareStatement(sql);
             pstm.setInt(1, money);
             pstm.setString(2, memberId);
             int resultSize = pstm.executeUpdate();
             log.info("resultSize = {}", resultSize);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
-        }finally {
+            throw new MyDBException(e);
+
+        } finally {
             close(con, pstm, null);
         }
 
     }
 
+    @Override
 
-    public void delete(String memberId) throws SQLException {
+    public void delete(String memberId) {
         String sql = "DELETE FROM MEMBER WHERE member_id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
 
-        try{
+        try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, memberId);
             pstmt.executeUpdate();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("db error ", e);
-            throw e;
-        }finally {
+            throw new MyDBException(e);
+
+        } finally {
             close(con, pstmt, null);
         }
     }
 
 
-    private void close(Connection con, Statement stmt, ResultSet rs) throws SQLException {
+    private void close(Connection con, Statement stmt, ResultSet rs) {
         JdbcUtils.closeResultSet(rs);
         JdbcUtils.closeStatement(stmt);
 
@@ -125,7 +135,7 @@ public class MemberRepositoryV3 implements MemberRepositoryEx{
 //        JdbcUtils.closeConnection(con);
     }
 
-    private Connection getConnection() throws SQLException {
+    private Connection getConnection(){
         // 트랜잭션 동기화를 사용하려면 DataSoruceUtils를 사용해야 한다.
         Connection con = DataSourceUtils.getConnection(dataSource);
         log.info("get Connection = {}, class = {}", con, con.getClass());

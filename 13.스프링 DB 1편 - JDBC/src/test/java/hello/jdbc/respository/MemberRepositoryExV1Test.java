@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Slf4j
-class MemberRepositoryV1Test {
+class MemberRepositoryExV1Test {
 
     MemberRepositoryV1 repository;
 
