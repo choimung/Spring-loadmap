@@ -36,7 +36,6 @@ public class ThreadLocalLogTrace implements LogTrace{
     @Override
     public void end(TraceStatus status) {
         complete(status, null);
-
     }
 
     @Override
